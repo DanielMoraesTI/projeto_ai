@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Módulo 7 - GenAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="hero-head">
+        <h1 class="hero-title">SkyNet <span>Tasks</span></h1>
+        <p class="hero-subtitle">
+          <span class="hero-version">Versão T800</span>
+        </p>
+      </div>
+
+      <nav class="site-nav" style="margin-top: 18px">
+        <a class="nav-btn active" href="./index.html">📋 Tarefas</a>
+        <a class="nav-btn" href="./reunioes.html">🎙️ Reuniões</a>
+      </nav>
+
+      <section
+        class="panel chat-panel chat-panel--hero chat-drawer stack"
+        data-chat-drawer
+      >
+        <div class="chat-window" aria-live="polite">
+          <div class="chat-window-topbar">
+            <span class="chat-status" data-chat-status
+              >Pronto para conversar.</span
+            >
+            <button
+              type="button"
+              class="chat-drawer-close"
+              data-chat-close
+              aria-label="Fechar chat"
+            >
+              ✕
+            </button>
+          </div>
+          <div class="chat-thread" data-chat-thread></div>
+
+          <div class="chat-compose-panel">
+            <label class="chat-composer" for="clickbot-message">
+              Mensagem para o T800
+            </label>
+
+            <div class="chat-input-row">
+              <textarea
+                id="clickbot-message"
+                data-clickbot-message
+                placeholder="Exemplo: organiza meu estudo para esta semana"
+              ></textarea>
+
+              <button
+                type="button"
+                data-action="clickbot"
+                class="chat-send-btn"
+                aria-label="Enviar mensagem"
+                title="Enviar"
+              >
+                ➤
+              </button>
+            </div>
+
+            <p class="chat-compose-hint"></p>
+          </div>
+        </div>
+      </section>
+
+      <div class="grid grid--single">
+        <section class="panel stack">
+          <div>
+            <h2>Criar Tarefa com Texto Livre</h2>
+            <p>
+              Escreva o pedido com suas palavras e o T800 transforma em tarefa.
+            </p>
+          </div>
+          <label>
+            Escreva sua tarefa ou demanda aqui
+            <textarea
+              data-task-text
+              placeholder="Exemplo: criar uma tarefa para revisar o fluxo de autenticação e documentar as mudanças."
+            ></textarea>
+          </label>
+          <div class="actions actions--create-ai">
+            <button type="button" data-action="create">Criar com T800</button>
+          </div>
+          <div data-ai-edit-section hidden>
+            <div class="ai-edit-banner">
+              Editando: <strong data-ai-edit-task-label></strong>
+              <button
+                type="button"
+                class="cancel-btn"
+                data-action="cancel-edit"
+              >
+                Cancelar edição
+              </button>
+            </div>
+            <label>
+              Descreva as alterações com texto livre
+              <textarea
+                data-task-ai-edit-text
+                placeholder="Ex: aumentar prioridade para alta e adicionar prazo para sexta-feira..."
+              ></textarea>
+            </label>
+            <div class="actions">
+              <button type="button" data-action="update-with-ai">
+                Atualizar com T800
+              </button>
+            </div>
+          </div>
+
+          <hr />
+
+          <div>
+            <h2>Criar ou Alterar Tarefa Manualmente</h2>
+            <p>Preencha os campos e salve a tarefa criada ou alterada.</p>
+          </div>
+          <label>
+            Título
+            <input type="text" data-task-title placeholder="Título da tarefa" />
+          </label>
+          <label>
+            Descrição
+            <textarea
+              data-task-description
+              placeholder="Descrição da tarefa"
+            ></textarea>
+          </label>
+          <label>
+            Prioridade
+            <select data-task-priority>
+              <option value="high">alta</option>
+              <option value="medium" selected>média</option>
+              <option value="low">baixa</option>
+            </select>
+          </label>
+          <label>
+            Tags
+            <input
+              type="text"
+              data-task-tags
+              placeholder="Ex: backend, api, urgente"
+            />
+          </label>
+          <label>
+            Horas estimadas
+            <input
+              type="number"
+              data-task-estimated-hours
+              placeholder="Ex: 5"
+              min="0"
+              step="0.5"
+            />
+          </label>
+          <label>
+            Data de conclusão
+            <input type="date" data-task-due-date />
+          </label>
+          <div class="actions">
+            <button type="button" data-action="save-manual">
+              Salvar Tarefa
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel stack task-list-section" data-task-list-section>
+        <div class="task-list-header">
+          <div>
+            <h2>Lista de Tarefas</h2>
+            <p>Lista de Tarefas criadas via T800 ou manualmente.</p>
+          </div>
+          <div class="task-filters" data-task-filters>
+            <button type="button" class="filter-btn active" data-filter="all">
+              Todas
+            </button>
+            <button type="button" class="filter-btn" data-filter="high">
+              Alta
+            </button>
+            <button type="button" class="filter-btn" data-filter="medium">
+              Média
+            </button>
+            <button type="button" class="filter-btn" data-filter="low">
+              Baixa
+            </button>
+            <span class="filter-sep"></span>
+            <button type="button" class="filter-btn" data-sort="due_date">
+              Por prazo
+            </button>
+          </div>
+        </div>
+        <div class="task-cards" data-task-cards>
+          <p class="task-list-empty" data-task-list-empty>
+            Nenhuma tarefa ainda. Crie uma via T800 ou manualmente.
+          </p>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        Curso M7: Introdução a GenAI &amp; GenAI no Browser - Aluno: Daniel
+        Moraes UpSkill 218
+      </footer>
+
+      <div class="chat-overlay" data-chat-overlay></div>
+    </main>
+
+    <button
+      type="button"
+      class="chat-launcher"
+      data-chat-toggle
+      aria-label="Abrir chat T800"
+      aria-expanded="false"
+    >
+      <img src="./assets/avatar-t800.svg" alt="" aria-hidden="true" />
+    </button>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

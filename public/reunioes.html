@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Módulo 7 - Reuniões</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="hero-head">
+        <h1 class="hero-title">SkyNet <span>Tasks</span></h1>
+        <p class="hero-subtitle">
+          <span class="hero-version">Versão T800</span>
+        </p>
+      </div>
+
+      <nav class="site-nav" style="margin-top: 18px">
+        <a class="nav-btn" href="./index.html">📋 Tarefas</a>
+        <a class="nav-btn active" href="./reunioes.html">🎙️ Reuniões</a>
+      </nav>
+
+      <section class="panel stack" style="margin-top: 22px">
+        <div>
+          <h2>Transcritor de Reuniões em Tempo Real</h2>
+          <p>
+            Cole as notas da reunião para gerar um sumário executivo em stream com uso do T800.
+          </p>
+        </div>
+        <label>
+          Project ID
+          <input
+            type="number"
+            min="1"
+            data-meeting-project-id
+            placeholder="Exemplo: 1"
+          />
+        </label>
+        <label>
+          Título da reunião
+          <input
+            type="text"
+            data-meeting-title
+            placeholder="Exemplo: Criação do roadmap de produto"
+          />
+        </label>
+        <label>
+          Notas da reunião
+          <textarea
+            data-meeting-text
+            placeholder="Cole aqui a transcrição/notas completas da reunião..."
+          ></textarea>
+        </label>
+        <div class="actions">
+          <button type="button" data-action="meeting-summary-stream">
+            Gerar sumário em stream com o T800
+          </button>
+        </div>
+        <p class="notice" data-meeting-processing hidden>
+          A processar pontos chave...
+        </p>
+        <pre data-meeting-summary-output>
+          O sumário da reunião aparecerá aqui em tempo real.
+        </pre>
+      </section>
+
+      <section class="panel stack task-list-section" data-meeting-list-section>
+        <div class="task-list-header">
+          <div>
+            <h2>Reuniões salvas</h2>
+            <p>
+              Busque por contexto e clique em um card para visualizar o sumário
+              completo da reunião.
+            </p>
+          </div>
+          <div class="meeting-search-wrap">
+            <input
+              type="search"
+              data-meeting-search
+              placeholder="Buscar por título, resumo ou conteúdo..."
+            />
+          </div>
+        </div>
+
+        <div class="task-cards" data-meeting-cards>
+          <p class="task-list-empty" data-meeting-list-empty>
+            Nenhuma reunião salva ainda.
+          </p>
+        </div>
+      </section>
+
+      <div
+        class="meeting-modal-overlay"
+        data-meeting-modal-overlay
+        hidden
+      ></div>
+      <article
+        class="meeting-modal"
+        data-meeting-modal
+        hidden
+        aria-modal="true"
+        role="dialog"
+        aria-label="Detalhes da reunião"
+      >
+        <header class="meeting-detail-head">
+          <h3 data-meeting-detail-title>Detalhes da reunião</h3>
+          <div class="meeting-modal-top-actions">
+            <span class="task-card-date" data-meeting-detail-date></span>
+            <button
+              type="button"
+              class="task-card-btn meeting-modal-close"
+              data-meeting-modal-close
+              aria-label="Fechar detalhe"
+            >
+              ✕
+            </button>
+          </div>
+        </header>
+        <pre data-meeting-detail-summary></pre>
+      </article>
+
+      <footer class="site-footer">
+        Curso M7: Introdução a GenAI &amp; GenAI no Browser - Aluno: Daniel
+        Moraes UpSkill 218
+      </footer>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
