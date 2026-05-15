@@ -8,17 +8,23 @@ import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
 export const clickupTaskSchema = z.object({
-  title: z.string().describe("Um título curto e profissional para a tarefa."),
+  title: z
+    .string()
+    .describe(
+      "Um título curto em português do Brasil, com no máximo 8 palavras e sem termos técnicos de código.",
+    ),
   description: z
     .string()
-    .describe("Um resumo detalhado do que precisa ser feito."),
+    .describe(
+      "Um resumo claro em português do Brasil, focado na ação da tarefa e sem código, nomes de arquivos ou detalhes internos do projeto.",
+    ),
   priority: z
     .enum(["high", "medium", "low"])
     .describe("Nível de prioridade no padrão do sistema: high, medium ou low."),
   tags: z
     .array(z.string())
     .describe(
-      "Lista de categorias/etiquetas relevantes (ex: bug, feature, design).",
+      "Lista curta de etiquetas em português do Brasil, sem nomes técnicos do projeto.",
     ),
   estimated_hours: z
     .number()
@@ -40,96 +46,6 @@ const TEMPERATURE_BY_ACTION = {
 
 function getTemperatureByAction(actionName) {
   return TEMPERATURE_BY_ACTION[actionName] ?? 0.2;
-}
-
-class UnsupportedTaskIntentError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "UnsupportedTaskIntentError";
-    this.status = 400;
-  }
-}
-
-function normalizeIntentText(value) {
-  return String(value || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}
-
-const TASK_REFERENCE_PATTERN =
-  "(tarefa|card|item|registro|essa tarefa|esta tarefa|tarefa atual|tarefa selecionada|tarefa existente)";
-const DELETE_VERB_PATTERN =
-  "(excluir|exclua|deletar|delete|remover|remova|apagar|apague|eliminar|elimine|descartar|descarte|cancelar|cancele|tirar|tire)";
-const EDIT_VERB_PATTERN =
-  "(editar|edite|alterar|altere|atualizar|atualize|mudar|mude|ajustar|ajuste|corrigir|corrija|revisar|revise)";
-const CREATE_VERB_PATTERN =
-  "(criar|crie|adicionar|adicione|gerar|gere|abrir|abra|registrar|registre|montar|monte)";
-
-function matchesIntent(text, verbPattern, extraPatterns = []) {
-  const patterns = [
-    new RegExp(`\\b${verbPattern}\\b.{0,50}\\b${TASK_REFERENCE_PATTERN}\\b`),
-    new RegExp(`\\b${TASK_REFERENCE_PATTERN}\\b.{0,50}\\b${verbPattern}\\b`),
-    ...extraPatterns.map((pattern) => new RegExp(pattern)),
-  ];
-
-  return patterns.some((pattern) => pattern.test(text));
-}
-
-function containsTaskDeleteIntent(text) {
-  return matchesIntent(text, DELETE_VERB_PATTERN, [
-    "\\b(apaga|remove|deleta|exclui|cancela|descarta)\\s+(isso|essa|essa tarefa|esta tarefa)\\b",
-    "\\b(quero|pode|consigo)\\b.{0,20}\\b(excluir|deletar|remover|apagar|cancelar|descartar)\\b",
-  ]);
-}
-
-function containsTaskEditIntent(text) {
-  return matchesIntent(text, EDIT_VERB_PATTERN, [
-    "\\b(tarefa|card|item)\\b.{0,40}\\b(existente|atual|selecionada|ja existe|ja criada)\\b",
-    "\\b(mexa|ajuste|corrija)\\b.{0,30}\\b(na|nesta|nessa)\\s+tarefa\\b",
-  ]);
-}
-
-function containsTaskCreateIntent(text) {
-  return matchesIntent(text, CREATE_VERB_PATTERN, [
-    "\\bnova tarefa\\b",
-    "\\b(crie|gere|abra|registre)\\b.{0,20}\\b(uma|outra|nova)\\b",
-    "\\b(adicione|inclua)\\b.{0,20}\\b(nova|mais uma)\\s+tarefa\\b",
-  ]);
-}
-
-function validateTaskTextIntent(text, mode) {
-  const normalizedText = normalizeIntentText(text);
-
-  if (mode === "create") {
-    if (containsTaskDeleteIntent(normalizedText)) {
-      throw new UnsupportedTaskIntentError(
-        "Este campo é para criar tarefa com IA. Para excluir, use o X no card da tarefa.",
-      );
-    }
-
-    if (containsTaskEditIntent(normalizedText)) {
-      throw new UnsupportedTaskIntentError(
-        "Este campo é para criar tarefa com IA. Para editar uma tarefa existente, use o campo de edição com IA.",
-      );
-    }
-
-    return;
-  }
-
-  if (mode === "update") {
-    if (containsTaskDeleteIntent(normalizedText)) {
-      throw new UnsupportedTaskIntentError(
-        "Este campo é para editar a tarefa selecionada com IA. Para excluir, use o X no card da tarefa.",
-      );
-    }
-
-    if (containsTaskCreateIntent(normalizedText)) {
-      throw new UnsupportedTaskIntentError(
-        "Este campo é para editar a tarefa selecionada com IA. Para criar nova tarefa, use o campo de criação com IA.",
-      );
-    }
-  }
 }
 
 function normalizePriority(priority) {
@@ -320,8 +236,6 @@ function isGeminiUnavailableError(error) {
 }
 
 async function createTaskFromText(text, mode = "create") {
-  validateTaskTextIntent(text, mode);
-
   const prompt =
     mode === "update"
       ? `Analisa o seguinte texto e atualiza a tarefa selecionada sem criar ou excluir outra tarefa:\n\n"${text}"`
@@ -594,7 +508,6 @@ async function deleteTask(id) {
 }
 
 const taskService = {
-  UnsupportedTaskIntentError,
   isGeminiConfigured,
   isGeminiUnavailableError,
   createTaskFromText,
