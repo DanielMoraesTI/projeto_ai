@@ -17,7 +17,7 @@ function getStreamErrorMessage(error, fallbackMessage) {
   }
 
   if (loweredMessage.includes("gemini_api_key")) {
-    return "A chave GEMINI_API_KEY nao esta configurada no servidor.";
+    return "A chave GEMINI_API_KEY não esta configurada no servidor.";
   }
 
   return fallbackMessage;
@@ -89,7 +89,7 @@ async function streamMeetingSummary(req, res) {
       `${JSON.stringify({
         type: "error",
         error:
-          "O campo 'project_id' é obrigatório e deve ser um número inteiro positivo.",
+          "O campo 'Project ID' é obrigatório e deve ser um número inteiro positivo.",
       })}\n`,
     );
     res.end();
@@ -101,7 +101,7 @@ async function streamMeetingSummary(req, res) {
     res.write(
       `${JSON.stringify({
         type: "error",
-        error: "O campo 'original_text' é obrigatório e deve ser texto.",
+        error: "O campo 'Notas da Reunião' é obrigatório e deve ser texto.",
       })}\n`,
     );
     res.end();
@@ -113,7 +113,7 @@ async function streamMeetingSummary(req, res) {
     res.write(
       `${JSON.stringify({
         type: "error",
-        error: "O campo 'title' é obrigatório e deve ser texto.",
+        error: "O campo 'Título' é obrigatório e deve ser texto.",
       })}\n`,
     );
     res.end();
@@ -131,7 +131,7 @@ async function streamMeetingSummary(req, res) {
     );
 
     const genAI = getGenAI();
-    const prompt = `Você é um assistente de reuniões. Gere um sumário executivo em português, objetivo e acionável com base nas notas abaixo.
+    const prompt = `Você é um assistente de reuniões. Gere um sumário executivo em português di Brasil, objetivo e acionável com base nas notas abaixo.
 
 Notas da reunião:
 ${originalText.trim()}

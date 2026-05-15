@@ -135,7 +135,7 @@ const suggestTagsForTask = async (req, res) => {
       return res.status(400).json({
         success: false,
         error:
-          "A task deve ter o campo 'description' preenchido para sugerir tags.",
+          "A task deve ter o campo 'descrição' preenchido para sugerir tags.",
       });
     }
 
@@ -207,7 +207,7 @@ const saveManualTask = async (req, res) => {
     if (!title || typeof title !== "string" || title.trim().length === 0) {
       return res.status(400).json({
         success: false,
-        error: "O campo 'title' é obrigatório.",
+        error: "O campo 'Título' é obrigatório.",
       });
     }
 
@@ -254,7 +254,7 @@ const updateManualTask = async (req, res) => {
     if (!title || typeof title !== "string" || title.trim().length === 0) {
       return res.status(400).json({
         success: false,
-        error: "O campo 'title' é obrigatório.",
+        error: "O campo 'Título' é obrigatório.",
       });
     }
 
