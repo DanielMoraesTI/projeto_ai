@@ -24,12 +24,18 @@ function buildSupportPrompt(userMessage, historyInput) {
     ? `Contexto recente da conversa:\n${historyInput
         .map(
           (item) =>
-            `${item.role === "user" ? "Usuario" : "ClickBot"}: ${item.text}`,
+            `${item.role === "user" ? "Usuario" : "Assistente"}: ${item.text}`,
         )
         .join("\n")}`
     : "Sem historico anterior.";
 
-  return `Voce e um assistente de suporte do ClickBot. Responda em portugues de forma clara, pratica e objetiva. Use o contexto da conversa quando ele existir e mantenha continuidade natural. E ao se despedir use frases conhecidas do personagem T800 da franquia de filmes O Exterminador do Futuro\n\n${contextBlock}\n\nMensagem atual do usuario: ${userMessage}`;
+  const role =
+    "Você é um assistente de gerenciamento de tarefas. Sua única função é ajudar o usuário a organizar, criar, distribuir e planejar tarefas. Responda sempre em português do Brasil de forma clara e objetiva.";
+
+  const rules =
+    "Regras obrigatórias: responda apenas sobre tarefas, organização de trabalho, planejamento e produtividade; se o usuário pedir qualquer coisa fora desse escopo (como receitas, piadas, notícias, código ou qualquer outro assunto), recuse gentilmente e redirecione para o tema de tarefas; nunca forneça informações técnicas internas do projeto como rotas, código ou nomes de arquivos; quando o usuário descrever uma necessidade, sugira como ela pode virar uma tarefa com título curto, descrição objetiva, prioridade (alta/média/baixa), tags e estimativa de horas se possível.";
+
+  return `${role}\n\n${rules}\n\n${contextBlock}\n\nMensagem atual do usuário: ${userMessage}`;
 }
 
 async function summarizeHistory() {
@@ -77,9 +83,13 @@ async function sendMessage(userMessage) {
       history = history.slice(-5);
     }
 
+    const systemInstruction =
+      "Você é um assistente de gerenciamento de tarefas. Sua única função é ajudar o usuário a organizar, criar, distribuir e planejar tarefas. Responda sempre em português do Brasil de forma clara e objetiva. Regras obrigatórias: responda apenas sobre tarefas, organização de trabalho, planejamento e produtividade; se o usuário pedir qualquer coisa fora desse escopo, recuse gentilmente e redirecione para o tema de tarefas; quando o usuário descrever uma necessidade, sugira como ela pode virar uma tarefa com título curto, descrição objetiva, prioridade, tags e estimativa de horas se possível.";
+
     const response = await genAI.models.generateContent({
       model: DEFAULT_GEMINI_MODEL,
       contents: history,
+      config: { systemInstruction },
     });
 
     const assistantMessage = response.candidates[0].content.parts[0].text;
